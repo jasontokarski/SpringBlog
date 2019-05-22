@@ -31,3 +31,4 @@ HELP.md
 
 ###Application properties###
 src/main/resources/db.properties
+bin/main/db.properties
