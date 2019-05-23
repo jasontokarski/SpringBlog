@@ -1,4 +1,4 @@
-package com.capgemini.util;
+package com.capgemini.config;
 
 import javax.sql.DataSource;
 
