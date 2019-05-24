@@ -3,20 +3,20 @@ package com.capgemini.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 public class Role {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "role_id")
 	private Long id;
 	
 	@Column(name = "role")
 	private String role;
-
+	
 	public Role() {
 	}
 
 	public Role(Long id, String role) {
+		super();
 		this.id = id;
 		this.role = role;
 	}

@@ -41,15 +41,13 @@ public class User {
 	private String email;
 	
 	//Check if our account is enabled
-	@Column(name = "enabled")
+	@Column(name = "active")
 	@NotNull
-	private boolean enabled = true;
+	private int active;
 	
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles;
 
 	public User() {
 	}
@@ -59,14 +57,15 @@ public class User {
 			@NotNull(message = "Please enter a username.") @Size(min = 3, max = 25) String username,
 			@NotNull(message = "Please enter a password.") @Size(min = 3, max = 25) String password,
 			@Email(message = "Invalid email format.") @NotNull(message = "Please enter an email address.") @Size(min = 3, max = 25) String email,
-			boolean enabled, Set<Role> roles) {
+			@NotNull int active, Set<Role> roles) {
+		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
 		this.email = email;
-		this.enabled = enabled;
+		this.active = active;
 		this.roles = roles;
 	}
 
@@ -118,12 +117,12 @@ public class User {
 		this.email = email;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public int getActive() {
+		return active;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setActive(int active) {
+		this.active = active;
 	}
 
 	public Set<Role> getRoles() {
