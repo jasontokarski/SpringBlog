@@ -6,13 +6,15 @@ import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
+import org.hibernate.annotations.ColumnDefault;
+
 @Entity
 @Table(name = "users")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "user_id")
-	private Long id;
+	private Long id = 0L;
 	
 	@Column(name = "first_name")
 	@NotNull(message = "Please enter a first name.")
@@ -29,9 +31,8 @@ public class User {
 	@Size(min = 3, max = 25)
 	private String username;
 	
-	@Column(name = "password")
+	@Column(name = "password", length = 256)
 	@NotNull(message = "Please enter a password.")
-	@Size(min = 3, max = 25)
 	private String password;
 	
 	@Column(name = "email", unique = true)
@@ -42,31 +43,35 @@ public class User {
 	
 	//Check if our account is enabled
 	@Column(name = "active")
+	@ColumnDefault("1")
 	@NotNull
 	private int active;
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Post> posts = new HashSet<>();
+    
 	public User() {
 	}
 
-	public User(Long id, @NotNull(message = "Please enter a first name.") @Size(min = 2, max = 25) String firstName,
+	public User(@NotNull(message = "Please enter a first name.") @Size(min = 2, max = 25) String firstName,
 			@NotNull(message = "Please enter a last name.") @Size(min = 2, max = 25) String lastName,
 			@NotNull(message = "Please enter a username.") @Size(min = 3, max = 25) String username,
 			@NotNull(message = "Please enter a password.") @Size(min = 3, max = 25) String password,
 			@Email(message = "Invalid email format.") @NotNull(message = "Please enter an email address.") @Size(min = 3, max = 25) String email,
-			@NotNull int active, Set<Role> roles) {
+			int active) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.active = active;
-		this.roles = roles;
 	}
 
 	public Long getId() {
@@ -102,7 +107,7 @@ public class User {
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -131,5 +136,13 @@ public class User {
 
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
+	}
+
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
 	}
 }

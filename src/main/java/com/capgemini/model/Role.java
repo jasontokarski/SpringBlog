@@ -1,24 +1,34 @@
 package com.capgemini.model;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name = "role")
+@Table(name = "roles")
 public class Role {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "role_id")
 	private Long id;
 	
-	@Column(name = "role")
-	private String role;
+	@Enumerated(EnumType.STRING)
+    @NaturalId
+    @Column(length = 60)
+    private RoleName name;
 	
 	public Role() {
 	}
 
-	public Role(Long id, String role) {
-		super();
-		this.id = id;
-		this.role = role;
+	public Role(RoleName name) {
+		this.name = name;
 	}
 
 	public Long getId() {
@@ -29,11 +39,11 @@ public class Role {
 		this.id = id;
 	}
 
-	public String getRole() {
-		return role;
+	public RoleName getName() {
+		return name;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setName(RoleName name) {
+		this.name = name;
 	}
 }

@@ -1,5 +1,8 @@
 package com.capgemini.config;
 
+import java.beans.PropertyVetoException;
+import java.util.logging.Logger;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +18,25 @@ public class AppConfig {
 	
 	@Autowired
 	private Environment env;
+
+	//Setup logger for diagnostics
+	private Logger logger = Logger.getLogger(getClass().getName());
 	
+	//Define bean for our data source.
 	@Bean
 	public DataSource getDataSource() {
 		final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		//log the connection props
+		logger.info(">>> db.url=" + env.getProperty("db.jdbcUrl"));
+		logger.info(">>> db.user=" + env.getProperty("db.username"));
+		
 		dataSource.setDriverClassName(env.getProperty("db.driver"));
+		
+		//Set database connection props
 		dataSource.setUrl(env.getProperty("db.jdbcUrl"));
 		dataSource.setUsername(env.getProperty("db.username"));
 		dataSource.setPassword(env.getProperty("db.password"));
+		
 		return dataSource;
 	}
 }
